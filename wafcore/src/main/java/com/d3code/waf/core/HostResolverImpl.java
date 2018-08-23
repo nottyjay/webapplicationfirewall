@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -19,9 +20,12 @@ import java.util.Map;
 public class HostResolverImpl implements HostResolver, WafHostResolver {
     private static final Logger LOG = LoggerFactory.getLogger(HostResolverImpl.class);
 
-    private Map<String, WeightedRoundRobinScheduling> serverMap;
+    private Map<String, WeightedRoundRobinScheduling> serverMap = new HashMap<String, WeightedRoundRobinScheduling>();
 
-    private HostResolverImpl(){
+    public HostResolverImpl(Map<String, List<String>> hostResolverMap){
+        for (Map.Entry<String, List<String>> hostResolver : hostResolverMap.entrySet()) {
+            addNewHost(hostResolver.getKey(), hostResolver.getValue());
+        }
     }
 
     public void addNewHost(String domain, List<String> targetServers) {
@@ -41,6 +45,7 @@ public class HostResolverImpl implements HostResolver, WafHostResolver {
     }
 
     public InetSocketAddress resolve(String host, int port) throws UnknownHostException {
+//        String key =
         return null;
     }
 }

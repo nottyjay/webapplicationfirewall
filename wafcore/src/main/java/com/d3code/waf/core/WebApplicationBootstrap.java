@@ -11,6 +11,7 @@ import org.littleshoot.proxy.impl.DefaultHttpProxyServer;
 import org.littleshoot.proxy.impl.ThreadPoolConfiguration;
 
 import java.net.InetSocketAddress;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -22,8 +23,9 @@ public class WebApplicationBootstrap {
 
     private static WebApplicationBootstrap instance;
     private HttpProxyServerBootstrap httpProxyServerBootstrap;
-    private List<HttpFiltersSource> httpFiltersSources;
-    private List<ActivityTracker> activityTrackers;
+    private List<HttpFiltersSource> httpFiltersSources = new ArrayList<HttpFiltersSource>();
+    private List<ActivityTracker> activityTrackers = new ArrayList<ActivityTracker>();
+    private HostResolverImpl hostResolver;
 
     public WebApplicationBootstrap(WebApplicationFirewallConfig config){
         httpProxyServerBootstrap = DefaultHttpProxyServer.bootstrap().withAddress(new InetSocketAddress(config.getHost(), config.getPort()));
@@ -35,6 +37,7 @@ public class WebApplicationBootstrap {
         httpProxyServerBootstrap.withAllowRequestToOriginServer(true)
                 .withProxyAlias("com.d3code.waf")
                 .withThreadPoolConfiguration(threadPoolConfiguration)
+                .withServerResolver(hostResolver)
                 .plusActivityTracker(
                         new ActivityTrackerAdapter(){
                             @Override
@@ -76,6 +79,11 @@ public class WebApplicationBootstrap {
 
     public WebApplicationBootstrap addActivityTracker(ActivityTracker... activityTrackers){
         ListUtils.union(this.activityTrackers, Arrays.asList(activityTrackers));
+        return this;
+    }
+
+    public WebApplicationBootstrap setHostResolver(HostResolverImpl hostResolver) {
+        this.hostResolver = hostResolver;
         return this;
     }
 

@@ -1,6 +1,7 @@
 package com.d3code.waf.core.util;
 
 import java.math.BigInteger;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -15,7 +16,7 @@ public class WeightedRoundRobinScheduling {
     private int currentWeight = 0;
     public CopyOnWriteArrayList<Server> healthilyServers;
     public CopyOnWriteArrayList<Server> unhealthilyServers;
-    public Map<String, Server> serverMap;
+    public Map<String, Server> serverMap = new HashMap<String, Server>();
 
     /**
      * Calculate the greatest common divisor of two numbers
